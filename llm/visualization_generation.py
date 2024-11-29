@@ -7,8 +7,8 @@ def main():
     reviewer = ReviewerAgent()
     
     # Example with CSV file
-    csv_path = "llm/data/Sales_Data_with_Categorical_Columns.csv"
-    description = "Financial data with multiple numerical columns over time"
+    csv_path = "scrape-and-modify-data\output\t_awvorm_001_curr.csv"
+    description = "Sales data with product categories and customer counts over time"
     
     try:
         print("Generating initial visualization code...")

@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Read the data from the CSV file with appropriate parameters and error handling
-df = pd.read_csv('Sales_Data_with_Categorical_Columns.csv', on_bad_lines='skip')
+# Reading the data from the csv file
+df = pd.read_csv('./../scrape-and-modify-data/output/t_awvorm_001_curr.csv')
 
 # Check the first few rows of the dataset
 print(df.head())
