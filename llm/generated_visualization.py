@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Reading the data from the csv file
-df = pd.read_csv('data/Sales_Data_with_Categorical_Columns.csv')
+df = pd.read_csv('./../scrape-and-modify-data/output/t_awvorm_001_curr.csv')
 
 # Let's check the first few rows of the dataset
 print(df.head())

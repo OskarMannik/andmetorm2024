@@ -5,7 +5,7 @@ def main():
     viz_gen = VisualizationGenerator()
     
     # Example with CSV file
-    csv_path = "data/Sales_Data_with_Categorical_Columns.csv"
+    csv_path = "scrape-and-modify-data\output\t_awvorm_001_curr.csv"
     description = "Sales data with product categories and customer counts over time"
     
     try:
