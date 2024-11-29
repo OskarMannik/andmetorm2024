@@ -11,6 +11,10 @@ def json_to_csv(json_file, save_folder):
         save_folder (string): Path where to save the CSV file.
     """
 
+    # Check if the save folder exists
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)
+
     try:
         # Open the JSON file
         with open(json_file, mode='r', encoding='utf-8') as file:

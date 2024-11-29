@@ -10,6 +10,11 @@ def download_files(urls, save_folder):
         urls ([string]): List of urls.
         save_folder (string): Path where to save the files.
     """
+
+    # Check if the save folder exists
+    if not os.path.exists(save_folder):
+        os.makedirs
+
     for url in urls:
         try:
             response = requests.get(url, timeout=10)
