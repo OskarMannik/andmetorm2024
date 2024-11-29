@@ -4,7 +4,10 @@ from src.scrape import download_files
 
 def main():
     urls = [
-        "https://keskkonnaandmed.envir.ee/t_awvorm_001_curr"
+        # Pinnavee võtt
+        "https://keskkonnaandmed.envir.ee/t_awtabel002_02_curr",
+        # Veekasutus
+        "https://keskkonnaandmed.envir.ee/t_awtabel004_curr"
     ]
 
     download_files(urls, "data")
