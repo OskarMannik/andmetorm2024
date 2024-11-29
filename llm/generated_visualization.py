@@ -27,5 +27,5 @@ plt.gcf().autofmt_xdate() # This automatically rotates and aligns the x-axis lab
 # Save the plot
 plt.savefig('output_visualization.png')
 
-# Display the plot
+
 plt.show()

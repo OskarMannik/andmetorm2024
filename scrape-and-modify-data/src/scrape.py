@@ -24,6 +24,10 @@ def download_files(urls, save_folder):
             file_name = url.split("/")[-1]
             file_path = os.path.join(save_folder, file_name+".json")
 
+            # Check if the save folder exists
+            if not os.path.exists(save_folder):
+                os.makedirs(save_folder)
+
             # Write the content to a file
             with open(file_path, "w", encoding="utf-8") as file:
                 file.write(response.text)
