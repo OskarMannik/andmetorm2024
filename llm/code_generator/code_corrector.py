@@ -10,7 +10,7 @@ class ReviewerAgent:
         Initialize the ReviewerAgent with Groq client.
         """
         self.client = client
-        self.retry_limit = 3
+        self.retry_limit = 5
 
     def validate_python_syntax(self, code):
         """
