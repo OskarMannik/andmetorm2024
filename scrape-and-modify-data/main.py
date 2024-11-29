@@ -11,7 +11,7 @@ def main():
     ]
 
     download_files(urls, "data")
-    json_to_csv("data/t_awvorm_001_curr.json", "output")
+    json_to_csv("data/t_awtabel002_02_curr.json", "output")
 
 
 if __name__ == "__main__":
