@@ -1,52 +1,31 @@
-# Import the necessary libraries
+# Importing necessary libraries
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Reading the data from the csv file
-df = pd.read_csv('./../scrape-and-modify-data/output/t_awvorm_001_curr.csv')
+# Reading the csv file
+data = pd.read_csv('../scrape-and-modify-data/output/t_awtabel002_02_curr.csv')
 
-# Check the first few rows of the dataset
-print(df.head())
+# Commenting out unnecessary columns
+# data = data[['reporting_year', 'year_total']]
 
-# Convert string numbers to appropriate numeric types
-df['Sales'] = pd.to_numeric(df['Sales'], errors='coerce')
-df['Revenue'] = pd.to_numeric(df['Revenue'], errors='coerce')
-df['Customer_Count'] = pd.to_numeric(df['Customer_Count'], errors='coerce')
+# Rename columns for better understanding
+data = data.rename(columns={'reporting_year': 'Year', 'year_total': 'Total Annual Water Flow Volume'})
 
-# Handle categorical data correctly
-df['Date'] = pd.to_datetime(df['Date'])
-df['Region'] = df['Region'].astype('category')
-df['Product_Category'] = df['Product_Category'].astype('category')
+# Plotting the data
+plt.figure(figsize=(10, 5)) # Set the size of the figure
+plt.title('Total Annual Water Flow Volume by Year') # Add a title
+plt.xlabel('Year') # Label the x-axis
+plt.ylabel('Total Annual Water Flow Volume') # Label the y-axis
 
-# Deal with potential missing or invalid values
-df = df.dropna()
+# Create a line plot
+plt.plot(data['Year'], data['Total Annual Water Flow Volume'], marker='o') # Use circles as markers
 
-# Time series plot for Sales column
-plt.figure(figsize=(12, 6))
-plt.style.use('ggplot')
-plt.plot('Date', 'Sales', data=df)
-plt.title('Sales Over Time')
-plt.xlabel('Date')
-plt.ylabel('Sales')
-plt.show()
+# Format the x-axis to make it more readable
+plt.gcf().autofmt_xdate() # This automatically rotates and aligns the x-axis labels
 
-# Bar chart for Revenue by Region
-plt.figure(figsize=(12, 6))
-plt.style.use('ggplot')
-revenue_by_region = df.groupby('Region')['Revenue'].mean()
-plt.bar(revenue_by_region.index, revenue_by_region.values)
-plt.title('Average Revenue by Region')
-plt.xlabel('Region')
-plt.ylabel('Revenue')
-plt.show()
+# Save the plot
+plt.savefig('output_visualization.png')
 
-# Bar chart for Customer_Count by Product_Category
-plt.figure(figsize=(12, 6))
-plt.style.use('ggplot')
-customer_count_by_category = df.groupby('Product_Category')['Customer_Count'].mean()
-plt.bar(customer_count_by_category.index, customer_count_by_category.values)
-plt.title('Average Customer Count by Product Category')
-plt.xlabel('Product Category')
-plt.ylabel('Customer Count')
+
 plt.show()
