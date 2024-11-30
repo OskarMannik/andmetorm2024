@@ -20,7 +20,7 @@ class VisualizationGenerator:
         self.client = Groq(
             api_key=os.getenv("GROQ_API_KEY"),
         )
-        self.model_name = os.getenv("GROQ_MODEL_NAME", "mixtral-8x7b-32768")
+        self.model_name = os.getenv("GROQ_MODEL_NAME", "llama-3.1-70b-versatile")
         self.translator = Translator()
         self.reviewer = ReviewerAgent(client=self.client)
         self.data = None
@@ -87,7 +87,7 @@ Provide only the Python code with comments."""
     def generate_visualization_from_csv(self, csv_path, data_description, user_prompt):
         # Load the data
         self.data = pd.read_csv(csv_path)
-        
+
         # Basic visualization based on user prompt
         # You can expand this to handle different types of visualizations
         if 'histogram' in user_prompt.lower():
@@ -97,7 +97,7 @@ Provide only the Python code with comments."""
         else:
             # Default to histogram
             self._create_histogram()
-        
+
         return True
 
     def _create_histogram(self):

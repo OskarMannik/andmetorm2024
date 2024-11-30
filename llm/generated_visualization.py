@@ -1,29 +1,34 @@
-# Importing required libraries
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Loading the dataset from the CSV file
-data = pd.read_csv('./data.csv')
+# Load the CSV file into a pandas DataFrame
+df = pd.read_csv('../scrape-and-modify-data/output/t_awtabel002_02_curr copy.csv')
 
-# Since the data type of 'aastakokku' column is float, it might contain some null values.
-# Let's replace those null values with the mean of the column so that it doesn't affect our histogram.
-data['aastakokku'].fillna(data['aastakokku'].mean(), inplace=True)
+# Select a specific row of data to visualize (in this case, the first row)
+row_data = df.iloc[0]
 
-# Now, let's create a histogram for the 'aastakokku' column which represents the total stock of fish in a year.
-plt.hist(data['aastakokku'], bins=50, edgecolor='black')
+# Extract the month names and corresponding values from the row
+month_names = ['January', 'February', 'March', 'April', 'May', 'June', 
+               'July', 'August', 'September', 'October', 'November', 'December']
+month_values = [row_data['january'], row_data['february'], row_data['march'], 
+                 row_data['april'], row_data['may'], row_data['june'], 
+                 row_data['july'], row_data['august'], row_data['september'], 
+                 row_data['october'], row_data['november'], row_data['december']]
 
-# Adding title, labels, and grid
-plt.title('Distribution of Total Stock of Fish in a Year')
-plt.xlabel('Total Stock of Fish')
-plt.ylabel('Frequency')
-plt.grid(True)
+# Create a line plot to visualize the monthly data
+plt.figure(figsize=(10, 6))  # Set the figure size
+plt.plot(month_names, month_values, marker='o')  # Create the line plot with markers
 
-# Formatting the x-axis ticks
-plt.xticks(np.arange(0, 350000, step=50000))
+# Set the title and labels
+plt.title('Monthly Water Data for {}'.format(row_data['water_catchment_name']))
+plt.xlabel('Month')
+plt.ylabel('Water Volume')
 
-# Saving the visualization as 'output_visualization.png'
+# Rotate the x-axis labels for better readability
+plt.xticks(rotation=45)
+
 plt.savefig('output_visualization.png')
 
-# Displaying the plot
+# Display the plot
 plt.show()
