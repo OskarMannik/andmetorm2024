@@ -6,7 +6,7 @@ def main():
     viz_gen = VisualizationGenerator()
     
     # Example with CSV file
-    csv_path = "../scrape-and-modify-data/output/t_awtabel002_02_curr.csv"
+    csv_path = "../scrape-and-modify-data/output/t_awtabel002_02_curr copy.csv"
     description = "Vee andmestik"
     
     try:

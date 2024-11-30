@@ -1,41 +1,36 @@
-# Importing necessary libraries
+# Import necessary libraries
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Reading the csv file
-data = pd.read_csv('../scrape-and-modify-data/output/t_awtabel002_02_curr.csv')
+# Load the CSV file into a pandas DataFrame
+df = pd.read_csv('../scrape-and-modify-data/output/t_awtabel002_02_curr copy.csv')
 
-# Cleaning the data by removing NaN values
-data = data.dropna()
+# Select a specific row of data to visualize (in this case, the first row)
+row_data = df.iloc[0]
 
-# Calculating the average annual water flow
-average_year_total = np.mean(data['year_total'])
+# Extract the month names and corresponding values from the row
+month_names = ['January', 'February', 'March', 'April', 'May', 'June', 
+               'July', 'August', 'September', 'October', 'November', 'December']
+month_values = [row_data['january'], row_data['february'], row_data['march'], 
+                 row_data['april'], row_data['may'], row_data['june'], 
+                 row_data['july'], row_data['august'], row_data['september'], 
+                 row_data['october'], row_data['november'], row_data['december']]
 
-# Creating a new dataframe with the year and year_total columns
-average_data = pd.DataFrame({
-    'reporting_year': [2022] + [2022 + i for i in range(1, 6)],  # Adding 5 years starting from 2022
-    'year_total': [average_year_total] * 6  # Repeating the average year_total 6 times
-})
+# Create a line plot to visualize the monthly data
+plt.figure(figsize=(10, 6))  # Set the figure size
+plt.plot(month_names, month_values, marker='o')  # Create the line plot with markers
 
-# Concatenating the original dataframe with the new dataframe
-data = pd.concat([data, average_data], ignore_index=True)
+# Set the title and labels
+plt.title('Monthly Water Data for {}'.format(row_data['water_catchment_name']))
+plt.xlabel('Month')
+plt.ylabel('Water Volume')
 
-# Plotting the data using a line plot
-plt.figure(figsize=(10, 6))
-plt.plot('reporting_year', 'year_total', data=data)
-plt.scatter('reporting_year', 'year_total', data=average_data)
+# Rotate the x-axis labels for better readability
+plt.xticks(rotation=45)
 
-# Setting the title and labels
-plt.title('Average Annual Water Flow (Vee andmestik)')
-plt.xlabel('Reporting Year')
-plt.ylabel('Year Total (m3)')
-
-# Adding a legend
-plt.legend(['Actual Data', 'Average'])
-
-# Saving the plot as a png file
+# Save the visualization as a PNG file
 plt.savefig('output_visualization.png')
 
-# Displaying the plot
+# Display the plot
 plt.show()

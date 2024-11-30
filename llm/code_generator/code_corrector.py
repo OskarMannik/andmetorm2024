@@ -127,7 +127,7 @@ class ReviewerAgent:
             messages = [{'role': 'user', 'content': prompt}]
             try:
                 response = self.client.chat.completions.create(
-                    model="mixtral-8x7b-32768",
+                    model="llama-3.1-70b-versatile",
                     messages=messages,
                     temperature=0.2,
                     max_tokens=2000,
