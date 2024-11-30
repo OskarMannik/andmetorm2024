@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import ImageDisplay from './ImageDisplay.vue'
 
-defineProps<{ msg: string }>()
+defineProps<{ 
+  msg: string,
+  visible: boolean 
+}>()
 </script>
 
 <template>
   <h1>{{ msg }}</h1>
   <ImageDisplay 
-    title="Graafi kirjeldus" 
+    title="Genereeritud graaf" 
     imagePath="../../data/image.png"
+    :visible="visible"
   />
 </template>
 

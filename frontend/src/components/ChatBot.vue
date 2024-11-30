@@ -28,11 +28,13 @@
   <script setup lang="ts">
   import { ref, watch } from 'vue'
 
+  const emit = defineEmits(['firstMessage'])
   const userInput = ref('')
   const messages = ref([
-    { text: 'Hello! How can I help you today?', sender: 'bot' }
+    { text: 'Hello! What do you want to know about the graph?', sender: 'bot' }
   ])
   const messageContainer = ref<HTMLElement | null>(null)
+  const hasUserSentMessage = ref(false)
 
   const getBotResponse = async (userMessage: string) => {
     try {
@@ -64,6 +66,11 @@
 
   const sendMessage = async () => {
     if (!userInput.value.trim()) return
+
+    if (!hasUserSentMessage.value) {
+      hasUserSentMessage.value = true
+      emit('firstMessage')
+    }
 
     messages.value.push({
       text: userInput.value,

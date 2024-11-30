@@ -3,6 +3,15 @@ import Sidebar from './components/Sidebar.vue'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import ChatBot from './components/ChatBot.vue'
+import { ref } from 'vue'
+
+const showImage = ref(false)
+
+const handleFirstMessage = () => {
+  setTimeout(() => {
+    showImage.value = true
+  }, 3000)
+}
 </script>
 
 <template>
@@ -11,8 +20,8 @@ import ChatBot from './components/ChatBot.vue'
     <Header />
     <main class="main-content">
       <div class="content-container">
-        <router-view></router-view>
-        <ChatBot />
+        <router-view :visible="showImage"></router-view>
+        <ChatBot @first-message="handleFirstMessage" />
       </div>
     </main>
     <Footer />

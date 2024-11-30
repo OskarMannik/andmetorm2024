@@ -1,12 +1,13 @@
 <script setup lang="ts">
 defineProps<{ 
   title: string,
-  imagePath: string 
+  imagePath: string,
+  visible: boolean
 }>()
 </script>
 
 <template>
-  <div class="main-content">
+  <div class="main-content" v-if="visible">
     <div class="image-container">
       <p class="text">{{ title }}</p>
       <img :src="imagePath" alt="graph" class="image">

@@ -1,20 +1,20 @@
 <template>
-  <div class="content-container">
-    <ImageDisplay 
-      title="Pinnavee võtt" 
-      imagePath="../../data/image.png"
-    />
-  </div>
+  <ImageDisplay 
+    :title="title" 
+    :imagePath="imagePath" 
+    :visible="visible" 
+  />
 </template>
 
 <script setup lang="ts">
 import ImageDisplay from '../components/ImageDisplay.vue'
-</script>
+import { ref } from 'vue'
 
-<style scoped>
-.content-container {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-}
-</style> 
+defineProps<{
+  visible: boolean
+}>()
+
+const title = ref('Pinnavee võtt')
+const imagePath = ref('../../data/image.png')
+</script> 
+

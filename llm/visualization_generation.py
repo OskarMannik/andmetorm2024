@@ -8,13 +8,15 @@ def main():
     # Example with CSV file
     csv_path = "../scrape-and-modify-data/output/t_awtabel002_02_curr copy.csv"
     description = "Vee andmestik"
+    user_prompt = "line"  # Default to line plot visualization
 
     try:
         print("Generating initial visualization code...")
         # Generate and process visualization code directly
         viz_gen.generate_visualization_from_csv(
             csv_path=csv_path,
-            data_description=description
+            data_description=description,
+            user_prompt=user_prompt
         )
 
         print("Visualization pipeline completed successfully!")

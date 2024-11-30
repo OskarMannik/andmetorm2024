@@ -4,6 +4,9 @@
       <div class="headline">
         <h1>Luup</h1>
       </div>
+      <div class="logo">
+        <img src="../../log.png" alt="Luup logo" class="logo-image">
+      </div>
       
     </div>
   </header>
@@ -16,6 +19,16 @@ export default {
 </script>
 
 <style scoped>
+.logo-image {
+  width: 75px;
+  height: 75px;
+}
+
+.logo{
+    align-items: right;
+
+}
+
 .header {
   background-color: #1A2D42;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
