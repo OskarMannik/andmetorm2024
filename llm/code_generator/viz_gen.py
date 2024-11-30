@@ -18,7 +18,7 @@ class VisualizationGenerator:
         self.client = Groq(
             api_key=os.getenv("GROQ_API_KEY"),
         )
-        self.model_name = os.getenv("GROQ_MODEL_NAME", "mixtral-8x7b-32768")
+        self.model_name = os.getenv("GROQ_MODEL_NAME", "llama-3.1-70b-versatile")
         self.translator = Translator()
         self.reviewer = ReviewerAgent(client=self.client)
 
