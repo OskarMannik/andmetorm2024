@@ -14,7 +14,7 @@
             type="text"
             v-model="userInput"
             @keyup.enter="sendMessage"
-            placeholder="Kirjuta oma küsimus..."
+            placeholder="Write your message..."
             class="input-placeholder"
           >
           <button @click="sendMessage">
@@ -30,13 +30,13 @@
 
   const userInput = ref('')
   const messages = ref([
-    { text: 'Tere! Kuidas saan teid aidata?', sender: 'bot' }
+    { text: 'Hello! How can I help you today?', sender: 'bot' }
   ])
   const messageContainer = ref<HTMLElement | null>(null)
 
   const getBotResponse = async (userMessage: string) => {
     try {
-      const response = await fetch('http://172.31.99.206:5001/send-image', {
+      const response = await fetch('http://localhost:5001/send-image', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

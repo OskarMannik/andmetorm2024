@@ -94,25 +94,24 @@ const toggleSidebar = () => {
   background-color: #1A2D42;
 }
 
-@media screen and (max-height: 700px) and (max-width: 1200px) {
+@media screen and (max-width: 1200px) {
     .sidebar {
-  padding-top: 20%;
-  width: 150px;
-
-}
+      padding-top: 30%;
+      width: 150px;
+    }
   
-  .navigation {
-    margin-top: 60px;
-  }
+    .navigation {
+      margin-top: 80px;
+    }
 }
 
 @media screen and (max-height: 400px) {
   .sidebar {
-    padding-top: 35%;
+    padding-top: 45%;
   }
   
   .navigation {
-    margin-top: 80px;
+    margin-top: 100px;
   }
 }
 </style> 

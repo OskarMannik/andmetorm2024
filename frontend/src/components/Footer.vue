@@ -1,9 +1,10 @@
 <template>
   <footer class="footer">
     <div class="footer-content">
+        <p>Philip Paškov, Oskar Männik, Robin Otter, Markus Tamm</p>
     </div>
     <div class="footer-bottom">
-      <p>tekst</p>
+      <p>Andmetorm 2024</p>
     </div>
   </footer>
 </template>
@@ -43,8 +44,9 @@ export default {
 }
 
 .footer-bottom {
+  max-height: 30px;
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid #555;
 }
