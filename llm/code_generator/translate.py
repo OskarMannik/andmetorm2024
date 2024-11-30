@@ -94,4 +94,8 @@ class Translator:
         prompt = f"Translate the following English text to Estonian:\n\n{english_text}\n\nTranslation:"
         messages = [{"role": "user", "content": prompt}]
         translation = self._get_chatbot_response(messages)
+<<<<<<< HEAD
         return translation
+=======
+        return translation
+>>>>>>> e43fe5b39522572a81c5bac646f685b7fabc20cc
