@@ -4,7 +4,6 @@
     <nav class="navigation">
       <ul>
         <li><router-link to="/">Avaleht</router-link></li>
-        <li><router-link to="/pinnavesi">Pinnavee võtt</router-link></li>
       </ul>
     </nav>
   </div>

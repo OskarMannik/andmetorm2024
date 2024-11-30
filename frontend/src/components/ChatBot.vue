@@ -28,7 +28,7 @@
   <script setup lang="ts">
   import { ref, watch } from 'vue'
 
-  const emit = defineEmits(['firstMessage'])
+  const emit = defineEmits(['firstMessage', 'newImage'])
   const userInput = ref('')
   const messages = ref([
     { text: 'Hello! What do you want to know about the graph?', sender: 'bot' }
@@ -38,13 +38,10 @@
 
   const getBotResponse = async (userMessage: string) => {
     try {
-      const response = await fetch('http://localhost:5001/send-image', {
+      const response = await fetch('http://127.0.0.1:5001/send-image', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ message: userMessage })
       })
@@ -53,39 +50,41 @@
         throw new Error('Network response was not ok')
       }
 
-      console.log(response.body)
+      const imageBlob = await response.blob()
+      const imageUrl = URL.createObjectURL(imageBlob)
+      emit('newImage', imageUrl)
 
-      const data = await response.json()
-      return data.response || 'Vabandust, ei saanud vastust.'
+      return 'I have generated a new visualization based on your request.'
 
     } catch (error) {
       console.error('Error:', error)
-      return 'Vabandust, tekkis viga. Palun proovige hiljem uuesti.'
+      return 'Sorry, there was an error generating the visualization.'
     }
   }
 
   const sendMessage = async () => {
     if (!userInput.value.trim()) return
 
-    if (!hasUserSentMessage.value) {
-      hasUserSentMessage.value = true
-      emit('firstMessage')
-    }
-
     messages.value.push({
       text: userInput.value,
       sender: 'user'
     })
 
-    setTimeout(async () => {
-      const botResponse = await getBotResponse(userInput.value)
-      messages.value.push({
-        text: botResponse,
-        sender: 'bot'
-      })
-    }, 500)
+    if (!hasUserSentMessage.value) {
+      hasUserSentMessage.value = true
+      emit('firstMessage')
+    }
 
+    const userMessageText = userInput.value
     userInput.value = ''
+
+    messages.value.push({
+      text: 'Generating visualization...',
+      sender: 'bot'
+    })
+
+    const botResponse = await getBotResponse(userMessageText)
+    messages.value[messages.value.length - 1].text = botResponse
   }
 
   watch(() => messages.value.length, () => {

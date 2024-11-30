@@ -22,6 +22,7 @@ export default {
 .logo-image {
   width: 75px;
   height: 75px;
+  border-radius: 50%;
 }
 
 .logo{
