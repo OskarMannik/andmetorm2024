@@ -2,17 +2,17 @@
   <div class="chat-container">
     <div class="chat-window">
       <div class="chat-messages" ref="messageContainer">
-        <div v-for="(message, index) in messages" 
-             :key="index" 
+        <div v-for="(message, index) in messages"
+             :key="index"
              :class="['message', message.sender]">
           {{ message.text }}
         </div>
       </div>
 
       <div class="chat-input">
-        <input 
-          type="text" 
-          v-model="userInput" 
+        <input
+          type="text"
+          v-model="userInput"
           @keyup.enter="sendMessage"
           placeholder="Kirjuta oma küsimus..."
           class="input-placeholder"
@@ -34,6 +34,25 @@ const messages = ref([
 ])
 const messageContainer = ref<HTMLElement | null>(null)
 
+<<<<<<< HEAD
+const getBotResponse = (userMessage: string) => {
+  const lowerMessage = userMessage.toLowerCase()
+
+  if (lowerMessage.includes('tere') || lowerMessage.includes('hello')) {
+    return 'Tere! Kuidas saan teid aidata?'
+  }
+  else if (lowerMessage.includes('abi') || lowerMessage.includes('help')) {
+    return 'Mida soovite teada?'
+  }
+  else if (lowerMessage.includes('veekasutus')) {
+    return 'Veekasutuse kohta leiate infot veekasutuse lehelt.'
+  }
+  else if (lowerMessage.includes('pinnavesi')) {
+    return 'Pinnavee võtu kohta leiate infot pinnavee võtu lehelt.'
+  }
+  else {
+    return 'Vabandust, ei saanud teie küsimusest aru. Palun proovige teisiti küsida.'
+=======
 const getBotResponse = async (userMessage: string) => {
   try {
     const response = await fetch('http://172.31.99.206:5001/send-image', {
@@ -59,6 +78,7 @@ const getBotResponse = async (userMessage: string) => {
   } catch (error) {
     console.error('Error:', error)
     return 'Vabandust, tekkis viga. Palun proovige hiljem uuesti.'
+>>>>>>> b07e364 (API request done)
   }
 }
 
@@ -198,4 +218,4 @@ watch(() => messages.value.length, () => {
 .chat-input button span {
   font-size: 1.2rem;
 }
-</style> 
+</style>
