@@ -52,7 +52,7 @@ Generate Python code that creates a clear and professional visualization using m
 5. End with plt.show()
 
 Provide only the Python code with comments."""
-        
+
         messages = [{'role': 'user', 'content': prompt}]
         code = self._get_chatbot_response(messages, temperature=0.2)
         return code
@@ -94,7 +94,9 @@ Provide only the Python code with comments."""
             print("\nVeergude nimed ja andmetüübid:")
             print(df.dtypes)
 
-            user_requirements = input("\nPalun kirjeldage, millist visualiseerimist soovite luua: ")
+            # user_requirements = input("\nPalun kirjeldage, millist visualiseerimist soovite luua: ")
+            # Post request peab siia suutma prompti
+            user_requirements = "genereeri 2022 ja 2023 aastate võrdlus"
             working_code = None  # Store the working code for iterative updates
 
             while True:
@@ -128,7 +130,8 @@ Provide only the Python code with comments."""
                 self.save_and_execute_code(working_code, output_file)
 
                 # Ask the user if they are satisfied
-                satisfaction = input("\nKas olete loodud visualiseerimiskoodiga rahul? (jah/ei): ").strip().lower()
+                # satisfaction = input("\nKas olete loodud visualiseerimiskoodiga rahul? (jah/ei): ").strip().lower()
+                satisfaction = "jah"
                 if satisfaction in ['jah', 'j']:
                     print("Visualization finalized and saved successfully.")
                     break

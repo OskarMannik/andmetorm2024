@@ -1,0 +1,27 @@
+# Use the official Python base image
+FROM python:3.12-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the Python script to the container
+COPY . .
+
+#update pip
+RUN pip install --upgrade pip
+# Install the Python dependencies
+RUN pip install pandas
+RUN pip install matplotlib
+RUN pip install numpy
+RUN pip install groq
+RUN pip install python-dotenv
+RUN pip install openai
+RUN pip install google-generativeai
+RUN pip install flask
+
+
+# Expose the port the server will run on
+# EXPOSE 5001
+
+# Command to run the Python server
+CMD ["python", "server.py"]
