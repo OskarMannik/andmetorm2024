@@ -1,34 +1,26 @@
-# Importing the required libraries
+# Importing required libraries
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Loading the data from the CSV file
+# Loading the dataset from the CSV file
 data = pd.read_csv('./data.csv')
 
-# Since the user requirements are to display the data distribution as a histogram,
-# we will select a numerical column for the visualization.
-# Here, I'm choosing 'aastakokku' (total quantity) column. You can change it if needed.
-column_to_visualize = 'aastakokku'
+# Since the data type of 'aastakokku' column is float, it might contain some null values.
+# Let's replace those null values with the mean of the column so that it doesn't affect our histogram.
+data['aastakokku'].fillna(data['aastakokku'].mean(), inplace=True)
 
-# Preparing the data for visualization
-data_to_visualize = data[column_to_visualize]
+# Now, let's create a histogram for the 'aastakokku' column which represents the total stock of fish in a year.
+plt.hist(data['aastakokku'], bins=50, edgecolor='black')
 
-# Checking for missing values
-if data_to_visualize.hasnans:
-    # If there are missing values, we will fill them using the mean value of the column
-    data_to_visualize = data_to_visualize.fillna(data_to_visualize.mean())
-
-# Creating the histogram
-plt.hist(data_to_visualize, bins=20, edgecolor='black')
-
-# Setting the plot title, x-axis label, and y-axis label
-plt.title('Data Distribution of ' + column_to_visualize)
-plt.xlabel(column_to_visualize)
+# Adding title, labels, and grid
+plt.title('Distribution of Total Stock of Fish in a Year')
+plt.xlabel('Total Stock of Fish')
 plt.ylabel('Frequency')
+plt.grid(True)
 
-# Adding gridlines
-plt.grid(axis='y', linestyle='--')
+# Formatting the x-axis ticks
+plt.xticks(np.arange(0, 350000, step=50000))
 
 # Saving the visualization as 'output_visualization.png'
 plt.savefig('output_visualization.png')

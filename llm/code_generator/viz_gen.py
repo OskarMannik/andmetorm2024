@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from .translate import Translator
 from .code_corrector import ReviewerAgent  # Assuming ReviewerAgent is implemented in reviewer.py
 import re
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 class VisualizationGenerator:
@@ -21,6 +23,7 @@ class VisualizationGenerator:
         self.model_name = os.getenv("GROQ_MODEL_NAME", "mixtral-8x7b-32768")
         self.translator = Translator()
         self.reviewer = ReviewerAgent(client=self.client)
+        self.data = None
 
     def _get_chatbot_response(self, messages, temperature=0.2):
         """Private method to get response from Groq"""
@@ -81,61 +84,34 @@ Provide only the Python code with comments."""
         except Exception as e:
             raise Exception(f"Error executing the visualization code: {e}")
 
-    def generate_visualization_from_csv(self, csv_path, data_description=None):
-        """
-        Generate, review, and execute visualization code by interacting with the user.
-        Allow iterative updates based on user feedback.
-        """
-        try:
-            # Read the CSV file
-            df = pd.read_csv(csv_path)
-            print("Siin on teie andmete esimesed read:")
-            print(df.head())
-            print("\nVeergude nimed ja andmetüübid:")
-            print(df.dtypes)
+    def generate_visualization_from_csv(self, csv_path, data_description, user_prompt):
+        # Load the data
+        self.data = pd.read_csv(csv_path)
+        
+        # Basic visualization based on user prompt
+        # You can expand this to handle different types of visualizations
+        if 'histogram' in user_prompt.lower():
+            self._create_histogram()
+        elif 'line' in user_prompt.lower():
+            self._create_line_plot()
+        else:
+            # Default to histogram
+            self._create_histogram()
+        
+        return True
 
-            user_requirements = "Kuvada andmete jaotust histogrammina."
-            working_code = None  # Store the working code for iterative updates
+    def _create_histogram(self):
+        plt.figure(figsize=(10, 6))
+        plt.hist(self.data['aastakokku'].dropna(), bins=30, edgecolor='black')
+        plt.title('Distribution of Total Stock of Fish in a Year')
+        plt.xlabel('Total Stock of Fish')
+        plt.ylabel('Frequency')
+        plt.grid(True)
 
-
-            while True:
-                # Generate the initial or updated visualization code
-                if working_code:
-                    print("\nUsing the previous working code as a base for updates...")
-                generated_code = self.generate_visualization_code(
-                    data_columns=df.columns.tolist(),
-                    sample_row=df.iloc[0].tolist(),
-                    csv_filename=csv_path,
-                    user_requirements=user_requirements,
-                    data_description=data_description
-                )
-
-                print("\nLoodud visualiseerimiskood:\n")
-                print(generated_code)
-
-                # Validate and correct code if execution fails
-                try:
-                    print("\nKontrollime loodud koodi...")
-                    reviewed_code = self.reviewer.review_and_correct_code(generated_code, csv_path)
-                    print("\nParandatud visualiseerimiskood:\n")
-                    print(reviewed_code)
-                    working_code = reviewed_code
-                except RuntimeError as review_error:
-                    print(f"Koodi läbivaatamisel ilmnes viga: {review_error}")
-                    return
-
-                # Save and execute the reviewed code
-                output_file = "generated_visualization.py"
-                self.save_and_execute_code(working_code, output_file)
-
-                # Ask the user if they are satisfied
-                satisfaction = input("\nKas olete loodud visualiseerimiskoodiga rahul? (jah/ei): ").strip().lower()
-                if satisfaction in ['jah', 'j']:
-                    print("Visualization finalized and saved successfully.")
-                    break
-                else:
-                    print("\nPalun täpsustage, mida soovite visualiseeringus muuta.")
-                    user_requirements = input("Uued nõuded: ")
-
-        except Exception as e:
-            raise Exception(f"CSV faili lugemisel tekkis viga: {str(e)}")
+    def _create_line_plot(self):
+        plt.figure(figsize=(10, 6))
+        plt.plot(self.data['aastakokku'].dropna())
+        plt.title('Total Stock of Fish Over Time')
+        plt.xlabel('Index')
+        plt.ylabel('Total Stock of Fish')
+        plt.grid(True)
