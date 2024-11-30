@@ -17,10 +17,11 @@ RUN pip install groq
 RUN pip install python-dotenv
 RUN pip install openai
 RUN pip install google-generativeai
+RUN pip install flask
 
 
 # Expose the port the server will run on
 # EXPOSE 5001
 
 # Command to run the Python server
-CMD ["python", "visualization_generation.py"]
+CMD ["python", "server.py"]

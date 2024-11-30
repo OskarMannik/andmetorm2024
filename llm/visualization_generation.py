@@ -1,12 +1,12 @@
 from code_generator import VisualizationGenerator
 
 
-def main():
+def generate_visualization():
     # Initialize the VisualizationGenerator (which includes the ReviewerAgent)
     viz_gen = VisualizationGenerator()
 
     # Example with CSV file
-    csv_path = "../scrape-and-modify-data/output/t_awtabel002_02_curr copy.csv"
+    csv_path = "./data/data.csv"
     description = "Vee andmestik"
     user_prompt = "line"  # Default to line plot visualization
 
