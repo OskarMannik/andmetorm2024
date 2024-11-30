@@ -32,7 +32,6 @@ import ChatBot from './components/ChatBot.vue'
   flex: 1;
   padding: 20px;
   margin-top: 60px; /* Space for header */
-  padding-left: 60px; /* Space for hamburger button */
 }
 
 .content-container {

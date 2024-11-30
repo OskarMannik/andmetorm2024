@@ -1,7 +1,7 @@
 <template>
   <header class="header">
       <div class="headline">
-        <h1>Pealkiri</h1>
+        <h1>Luup</h1>
     </div>
   </header>
 </template>
