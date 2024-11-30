@@ -1,9 +1,14 @@
-# LLM
-## Step 1
+pip install -r requirements.txt
+
 on vaja ka teha llm kausta .env fail
 
-## Step 2
-´´´docker build -t YOUR_CONTAINER_NAME .´´´
+jooksuta python3 visualization_generation.py
 
-## Step 3
-´´´docker run -v PATH_TO_SAVE:/app YOUR_CONTAINER_NAME´´´
+
+vali õige csv fail, mida tahad visualiseerida. 
+llm/visualization_generation.py 
+vali csv_path = ...
+lisaks pane millest see andmestik on paari sõnaga.
+
+kui kõik jookseb õigesti, siis peaks küsima kasutajalt tahetud graafi
+loodetavasti toimib
