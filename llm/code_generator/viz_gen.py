@@ -87,7 +87,7 @@ Provide only the Python code with comments."""
     def generate_visualization_from_csv(self, csv_path, data_description, user_prompt):
         # Load the data
         self.data = pd.read_csv(csv_path)
-        
+
         # Basic visualization based on user prompt
         # You can expand this to handle different types of visualizations
         if 'histogram' in user_prompt.lower():
@@ -97,7 +97,7 @@ Provide only the Python code with comments."""
         else:
             # Default to histogram
             self._create_histogram()
-        
+
         return True
 
     def _create_histogram(self):
