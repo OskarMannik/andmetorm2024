@@ -28,17 +28,13 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-// User input is stored in this reactive ref
 const userInput = ref('')
-
-// Chat history is stored in this reactive ref array
 const messages = ref([
   { text: 'Tere! Kuidas saan teid aidata?', sender: 'bot' }
 ])
-
-// Ref for auto-scrolling
 const messageContainer = ref<HTMLElement | null>(null)
 
+<<<<<<< HEAD
 const getBotResponse = (userMessage: string) => {
   const lowerMessage = userMessage.toLowerCase()
 
@@ -56,32 +52,55 @@ const getBotResponse = (userMessage: string) => {
   }
   else {
     return 'Vabandust, ei saanud teie küsimusest aru. Palun proovige teisiti küsida.'
+=======
+const getBotResponse = async (userMessage: string) => {
+  try {
+    const response = await fetch('http://172.31.99.206:5001/send-image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      },
+      body: JSON.stringify({ message: userMessage })
+    })
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    console.log(response.body)
+
+    const data = await response.json()
+    return data.response || 'Vabandust, ei saanud vastust.'
+
+  } catch (error) {
+    console.error('Error:', error)
+    return 'Vabandust, tekkis viga. Palun proovige hiljem uuesti.'
+>>>>>>> b07e364 (API request done)
   }
 }
 
-const sendMessage = () => {
+const sendMessage = async () => {
   if (!userInput.value.trim()) return
 
-  // Add user message to messages array in memory
   messages.value.push({
     text: userInput.value,
     sender: 'user'
   })
 
-  // Get and add bot response to messages array
-  setTimeout(() => {
-    const botResponse = getBotResponse(userInput.value)
+  setTimeout(async () => {
+    const botResponse = await getBotResponse(userInput.value)
     messages.value.push({
       text: botResponse,
       sender: 'bot'
     })
   }, 500)
 
-  // Clear input after sending
   userInput.value = ''
 }
 
-// Auto-scroll to bottom when new messages arrive
 watch(() => messages.value.length, () => {
   setTimeout(() => {
     if (messageContainer.value) {
@@ -95,8 +114,8 @@ watch(() => messages.value.length, () => {
 .chat-container {
   font-family: 'Poppins', sans-serif;
   height: 50%;
-  width: 100%; /* Changed from fixed 500px to 100% */
-  max-width: 650px; /* Added max-width to maintain size on larger screens */
+  width: 100%;
+  max-width: 650px;
   margin: 20px auto;
   background-color: #1A2D42;
   color: #C0C8CA;
@@ -113,7 +132,6 @@ watch(() => messages.value.length, () => {
   flex-direction: column;
   border-radius: 8px;
 }
-
 
 .chat-messages {
   flex: 1;
