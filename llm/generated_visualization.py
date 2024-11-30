@@ -1,36 +1,33 @@
-# Importing the required libraries
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Loading the data from the CSV file
-data = pd.read_csv('./data.csv')
+# Load the CSV file into a pandas DataFrame
+df = pd.read_csv('../scrape-and-modify-data/output/t_awtabel002_02_curr copy.csv')
 
-# Since the user requirements are to display the data distribution as a histogram,
-# we will select a numerical column for the visualization.
-# Here, I'm choosing 'aastakokku' (total quantity) column. You can change it if needed.
-column_to_visualize = 'aastakokku'
+# Select a specific row of data to visualize (in this case, the first row)
+row_data = df.iloc[0]
 
-# Preparing the data for visualization
-data_to_visualize = data[column_to_visualize]
+# Extract the month names and corresponding values from the row
+month_names = ['January', 'February', 'March', 'April', 'May', 'June', 
+               'July', 'August', 'September', 'October', 'November', 'December']
+month_values = [row_data['january'], row_data['february'], row_data['march'], 
+                 row_data['april'], row_data['may'], row_data['june'], 
+                 row_data['july'], row_data['august'], row_data['september'], 
+                 row_data['october'], row_data['november'], row_data['december']]
 
-# Checking for missing values
-if data_to_visualize.hasnans:
-    # If there are missing values, we will fill them using the mean value of the column
-    data_to_visualize = data_to_visualize.fillna(data_to_visualize.mean())
+# Create a line plot to visualize the monthly data
+plt.figure(figsize=(10, 6))  # Set the figure size
+plt.plot(month_names, month_values, marker='o')  # Create the line plot with markers
 
-# Creating the histogram
-plt.hist(data_to_visualize, bins=20, edgecolor='black')
+# Set the title and labels
+plt.title('Monthly Water Data for {}'.format(row_data['water_catchment_name']))
+plt.xlabel('Month')
+plt.ylabel('Water Volume')
 
-# Setting the plot title, x-axis label, and y-axis label
-plt.title('Data Distribution of ' + column_to_visualize)
-plt.xlabel(column_to_visualize)
-plt.ylabel('Frequency')
+# Rotate the x-axis labels for better readability
+plt.xticks(rotation=45)
 
-# Adding gridlines
-plt.grid(axis='y', linestyle='--')
-
-# Saving the visualization as 'output_visualization.png'
 plt.savefig('output_visualization.png')
 
 # Display the plot
