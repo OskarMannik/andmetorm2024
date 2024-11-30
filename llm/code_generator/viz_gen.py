@@ -4,10 +4,12 @@ import pandas as pd
 from dotenv import load_dotenv
 from .translate import Translator
 from .code_corrector import ReviewerAgent  # Assuming ReviewerAgent is implemented in reviewer.py
+import re
+
 
 class VisualizationGenerator:
     """
-    A class to generate and review visualization code based on user input and CSV data using Groq's language model.
+    A class to generate, review, and iteratively refine visualization code based on user input and feedback.
     """
 
     def __init__(self):
@@ -55,17 +57,26 @@ Provide only the Python code with comments."""
         code = self._get_chatbot_response(messages, temperature=0.2)
         return code
 
+    def clean_generated_code(self, code):
+        """Clean the generated Python code by removing unintended artifacts."""
+        cleaned_code = re.sub(r"^\s*['\"`]{3}.*?\n", "", code, flags=re.DOTALL)  # Remove opening triple quotes
+        cleaned_code = re.sub(r"['\"`]{3}\s*$", "", cleaned_code)  # Remove closing triple quotes
+        return cleaned_code.strip()
+
     def save_and_execute_code(self, code, file_path):
-        """Save the generated Python code to a file and execute it."""
+        """Save the cleaned Python code to a file and execute it."""
         try:
-            # Save the code to a file
+            # Clean the code
+            cleaned_code = self.clean_generated_code(code)
+
+            # Save the cleaned code to a file
             with open(file_path, "w") as f:
-                f.write(code)
+                f.write(cleaned_code)
             print(f"Code saved to {file_path}")
 
-            # Execute the code
+            # Execute the cleaned code
             exec_globals = {}
-            exec(code, exec_globals)
+            exec(cleaned_code, exec_globals)
             print("Visualization successfully generated and saved as PNG!")
         except Exception as e:
             raise Exception(f"Error executing the visualization code: {e}")
@@ -73,6 +84,7 @@ Provide only the Python code with comments."""
     def generate_visualization_from_csv(self, csv_path, data_description=None):
         """
         Generate, review, and execute visualization code by interacting with the user.
+        Allow iterative updates based on user feedback.
         """
         try:
             # Read the CSV file
@@ -83,33 +95,46 @@ Provide only the Python code with comments."""
             print(df.dtypes)
 
             user_requirements = input("\nPalun kirjeldage, millist visualiseerimist soovite luua: ")
+            working_code = None  # Store the working code for iterative updates
 
-            # Generate the initial visualization code
-            generated_code = self.generate_visualization_code(
-                data_columns=df.columns.tolist(),
-                sample_row=df.iloc[0].tolist(),
-                csv_filename=csv_path,
-                user_requirements=user_requirements,
-                data_description=data_description
-            )
+            while True:
+                # Generate the initial or updated visualization code
+                if working_code:
+                    print("\nUsing the previous working code as a base for updates...")
+                generated_code = self.generate_visualization_code(
+                    data_columns=df.columns.tolist(),
+                    sample_row=df.iloc[0].tolist(),
+                    csv_filename=csv_path,
+                    user_requirements=user_requirements,
+                    data_description=data_description
+                )
 
-            print("\nLoodud visualiseerimiskood:\n")
-            print(generated_code)
+                print("\nLoodud visualiseerimiskood:\n")
+                print(generated_code)
 
-            # Validate and correct code if execution fails
-            try:
-                print("\nKontrollime loodud koodi...")
-                reviewed_code = self.reviewer.review_and_correct_code(generated_code, csv_path)
-                print("\nParandatud visualiseerimiskood:\n")
-                print(reviewed_code)
-            except RuntimeError as review_error:
-                print(f"Koodi läbivaatamisel ilmnes viga: {review_error}")
-                return
+                # Validate and correct code if execution fails
+                try:
+                    print("\nKontrollime loodud koodi...")
+                    reviewed_code = self.reviewer.review_and_correct_code(generated_code, csv_path)
+                    print("\nParandatud visualiseerimiskood:\n")
+                    print(reviewed_code)
+                    working_code = reviewed_code
+                except RuntimeError as review_error:
+                    print(f"Koodi läbivaatamisel ilmnes viga: {review_error}")
+                    return
 
-            # Save and execute the reviewed code
-            output_file = "generated_visualization.py"
-            self.save_and_execute_code(reviewed_code, output_file)
+                # Save and execute the reviewed code
+                output_file = "generated_visualization.py"
+                self.save_and_execute_code(working_code, output_file)
+
+                # Ask the user if they are satisfied
+                satisfaction = input("\nKas olete loodud visualiseerimiskoodiga rahul? (jah/ei): ").strip().lower()
+                if satisfaction in ['jah', 'j']:
+                    print("Visualization finalized and saved successfully.")
+                    break
+                else:
+                    print("\nPalun täpsustage, mida soovite visualiseeringus muuta.")
+                    user_requirements = input("Uued nõuded: ")
 
         except Exception as e:
             raise Exception(f"CSV faili lugemisel tekkis viga: {str(e)}")
-

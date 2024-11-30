@@ -6,26 +6,36 @@ import numpy as np
 # Reading the csv file
 data = pd.read_csv('../scrape-and-modify-data/output/t_awtabel002_02_curr.csv')
 
-# Commenting out unnecessary columns
-# data = data[['reporting_year', 'year_total']]
+# Cleaning the data by removing NaN values
+data = data.dropna()
 
-# Rename columns for better understanding
-data = data.rename(columns={'reporting_year': 'Year', 'year_total': 'Total Annual Water Flow Volume'})
+# Calculating the average annual water flow
+average_year_total = np.mean(data['year_total'])
 
-# Plotting the data
-plt.figure(figsize=(10, 5)) # Set the size of the figure
-plt.title('Total Annual Water Flow Volume by Year') # Add a title
-plt.xlabel('Year') # Label the x-axis
-plt.ylabel('Total Annual Water Flow Volume') # Label the y-axis
+# Creating a new dataframe with the year and year_total columns
+average_data = pd.DataFrame({
+    'reporting_year': [2022] + [2022 + i for i in range(1, 6)],  # Adding 5 years starting from 2022
+    'year_total': [average_year_total] * 6  # Repeating the average year_total 6 times
+})
 
-# Create a line plot
-plt.plot(data['Year'], data['Total Annual Water Flow Volume'], marker='o') # Use circles as markers
+# Concatenating the original dataframe with the new dataframe
+data = pd.concat([data, average_data], ignore_index=True)
 
-# Format the x-axis to make it more readable
-plt.gcf().autofmt_xdate() # This automatically rotates and aligns the x-axis labels
+# Plotting the data using a line plot
+plt.figure(figsize=(10, 6))
+plt.plot('reporting_year', 'year_total', data=data)
+plt.scatter('reporting_year', 'year_total', data=average_data)
 
-# Save the plot
+# Setting the title and labels
+plt.title('Average Annual Water Flow (Vee andmestik)')
+plt.xlabel('Reporting Year')
+plt.ylabel('Year Total (m3)')
+
+# Adding a legend
+plt.legend(['Actual Data', 'Average'])
+
+# Saving the plot as a png file
 plt.savefig('output_visualization.png')
 
-
+# Displaying the plot
 plt.show()
