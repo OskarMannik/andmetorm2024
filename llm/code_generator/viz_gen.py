@@ -50,7 +50,7 @@ Generate Python code that creates a clear and professional visualization using m
 5. End with plt.show()
 
 Provide only the Python code with comments."""
-        
+
         messages = [{'role': 'user', 'content': prompt}]
         code = self._get_chatbot_response(messages, temperature=0.2)
         return code
@@ -82,7 +82,7 @@ Provide only the Python code with comments."""
             print("\nVeergude nimed ja andmetüübid:")
             print(df.dtypes)
 
-            user_requirements = input("\nPalun kirjeldage, millist visualiseerimist soovite luua: ")
+            user_requirements = "Kuvada andmete jaotust histogrammina."
 
             # Generate the initial visualization code
             generated_code = self.generate_visualization_code(
