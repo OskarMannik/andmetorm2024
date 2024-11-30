@@ -1,0 +1,17 @@
+# Use the official Python base image
+FROM python:3.12-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the Python script to the container
+COPY image-send-test.py .
+
+# Install the Python dependencies
+RUN pip install flask pillow flask-cors
+
+# Expose the port the server will run on
+EXPOSE 5001
+
+# Command to run the Python server
+CMD ["python", "image-send-test.py"]
