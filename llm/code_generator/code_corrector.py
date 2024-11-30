@@ -1,109 +1,147 @@
-from groq import Groq
 import ast
-from dotenv import load_dotenv
-import os
-import pandas as pd
+import re
+from collections import defaultdict
 
 class ReviewerAgent:
-    def __init__(self):
-        """Initialize the ReviewerAgent with Groq client and model settings"""
-        load_dotenv()
-        self.client = Groq(
-            api_key=os.getenv("GROQ_API_KEY"),
-        )
-        self.model_name = os.getenv("GROQ_MODEL_NAME", "mixtral-8x7b-32768")
+    """
+    A class to review and correct Python visualization code.
+    """
 
-    def _get_review_response(self, messages, temperature=0.2):
-        """Get response from Groq"""
-        response = self.client.chat.completions.create(
-            model=self.model_name,
-            messages=messages,
-            temperature=temperature,
-            max_tokens=2000,
-        )
-        return response.choices[0].message.content
-
-    def _analyze_csv_data(self, csv_path):
-        """Analyze CSV data for potential issues"""
-        try:
-            # Read a small sample of the data
-            sample_df = pd.read_csv(csv_path, nrows=5)
-            
-            # Check for common issues
-            issues = []
-            for column in sample_df.columns:
-                # Check for comma-separated numbers
-                if sample_df[column].dtype == 'object':
-                    sample_val = str(sample_df[column].iloc[0])
-                    if ',' in sample_val and any(c.isdigit() for c in sample_val):
-                        issues.append(f"Column '{column}' contains comma-separated numbers")
-            
-            return issues
-        except Exception as e:
-            return [f"Error analyzing CSV: {str(e)}"]
+    def __init__(self, client):
+        """
+        Initialize the ReviewerAgent with Groq client.
+        """
+        self.client = client
+        self.retry_limit = 5
+        self.error_tracker = defaultdict(int)  # Track error occurrences
 
     def validate_python_syntax(self, code):
-        """Check if the code has valid Python syntax"""
+        """
+        Validate the Python syntax of the given code.
+        """
         try:
             ast.parse(code)
-            return True
+            return True, None  # Return a tuple with True and None for no error
         except SyntaxError as e:
-            return False, str(e)
+            return False, str(e)  # Return False and the error message
 
-    def review_and_correct_code(self, generated_code, csv_path):
-        """Review and correct the generated visualization code"""
-        # Analyze CSV for potential issues
-        data_issues = self._analyze_csv_data(csv_path)
-        
-        prompt = f"""Review and correct this Python visualization code. The CSV file has the following issues to address:
-        {', '.join(data_issues)}
+    def clean_code(self, code):
+        """
+        Clean the generated Python code to remove unintended artifacts such as
+        markdown formatting, triple quotes, or other issues.
+        """
+        cleaned_code = re.sub(r"^\s*['\"`]{3}.*?\n", "", code, flags=re.DOTALL)  # Remove opening triple quotes
+        cleaned_code = re.sub(r"['\"`]{3}\s*$", "", cleaned_code)  # Remove closing triple quotes
+        return cleaned_code.strip()
 
-        Ensure the code:
-        1. Has valid Python syntax
-        2. Implements efficient data loading:
-           - Uses pd.read_csv with appropriate parameters
-           - Uses on_bad_lines='skip' for error handling
-        3. Includes proper data type handling:
-           - Converts string numbers to appropriate numeric types
-           - Handles categorical data correctly
-           - Deals with potential missing or invalid values
-        4. Includes all necessary imports
-        5. Uses best practices for data visualization:
-           - Appropriate sampling/aggregation before plotting
-           - Clear labels and titles
-           - Proper figure sizing and layout
-        6. Is properly formatted and commented
-        
-        Here's the code to review:
+    def validate_and_execute_code(self, code, csv_path):
+        """
+        Validate the code syntax and execute it.
+        Capture and return runtime errors, if any.
+        """
+        # Clean the code before validation
+        cleaned_code = self.clean_code(code)
 
-        {generated_code}
+        # Validate syntax
+        is_valid, error_message = self.validate_python_syntax(cleaned_code)
+        if not is_valid:
+            return False, f"Syntax Error: {error_message}"
 
-        Please provide the corrected version of the code that addresses all issues found.
-        Return ONLY the corrected Python code, no explanations."""
+        # Attempt to execute the code
+        try:
+            exec_globals = {}
+            exec(cleaned_code, {"csv_path": csv_path}, exec_globals)
+            return True, None  # Code executed successfully
+        except Exception as e:
+            return False, f"Runtime Error: {str(e)}"
 
-        messages = [{'role': 'user', 'content': prompt}]
-        corrected_code = self._get_review_response(messages)
+    def review_and_correct_code(self, code, csv_path):
+        """
+        Review and correct the Python code.
+        Retry fixing errors during execution.
+        """
+        original_code = code  # Preserve the original code
+        syntax_error_count = 0  # Counter for repeated syntax errors
 
-        # Validate the corrected code
-        validation_result = self.validate_python_syntax(corrected_code)
-        if isinstance(validation_result, tuple):
-            # If validation failed, try to get a fix
-            return self._get_syntax_fix(corrected_code, validation_result[1])
-        
-        return corrected_code
+        for attempt in range(self.retry_limit):
+            print(f"Review attempt {attempt + 1}...")
+            is_valid, error_message = self.validate_and_execute_code(code, csv_path)
 
-    def _get_syntax_fix(self, code, error):
-        """Get a fix for syntax errors"""
-        prompt = f"""This Python code has a syntax error: {error}
-        Please fix the code and return ONLY the corrected version:
+            if is_valid:
+                print("Code executed successfully!")
+                return code
 
-        {code}"""
+            print(f"Error detected: {error_message}")
 
-        messages = [{'role': 'user', 'content': prompt}]
-        fixed_code = self._get_review_response(messages)
-        
-        # Validate again
-        if self.validate_python_syntax(fixed_code) is True:
-            return fixed_code
-        else:
-            raise ValueError("Unable to generate valid Python code after multiple attempts")
+            # Detect repeated syntax errors
+            if "Syntax Error" in error_message:
+                syntax_error_count += 1
+                if syntax_error_count >= 2:  # Handle repeated syntax errors
+                    print("Repeated syntax error detected. Requesting a complete rewrite.")
+                    prompt = f"""The following Python code caused repeated syntax errors during execution:
+                    {error_message}
+
+                    Here is the problematic code:
+                    {code}
+
+                    Please rewrite the entire code to ensure:
+                    - It is valid, executable Python code without syntax errors.
+                    - All necessary imports and preprocessing steps are included.
+                    - The code runs successfully without any formatting issues or markdown artifacts.
+
+                    Return ONLY the fixed and complete Python code without any explanations:
+                    """
+                    # Send the rewrite request
+                    messages = [{'role': 'user', 'content': prompt}]
+                    try:
+                        response = self.client.chat.completions.create(
+                            model="mixtral-8x7b-32768",
+                            messages=messages,
+                            temperature=0.2,
+                            max_tokens=2000,
+                        ).choices[0].message.content
+                    except Exception as e:
+                        print(f"Error during model response: {e}")
+                        break
+
+                    # Sanitize and replace the code with the rewritten output
+                    code = self.clean_code(response)
+                    syntax_error_count = 0  # Reset the counter after a rewrite
+                    continue
+
+            # Handle other errors or refine the prompt
+            prompt = f"""The following Python code caused an error during execution:
+            {error_message}
+
+            Here is the problematic code:
+            {code}
+
+            Please fix the code to resolve the issue and ensure:
+            - Syntax errors are corrected.
+            - The code runs successfully without errors.
+            - The output should ONLY be runnable Python code without any formatting artifacts or markdown syntax.
+
+            Return ONLY the corrected Python code:
+            """
+            # Send the correction request
+            messages = [{'role': 'user', 'content': prompt}]
+            try:
+                response = self.client.chat.completions.create(
+                    model="mixtral-8x7b-32768",
+                    messages=messages,
+                    temperature=0.2,
+                    max_tokens=2000,
+                ).choices[0].message.content
+            except Exception as e:
+                print(f"Error during model response: {e}")
+                break
+
+            # Sanitize the returned code
+            code = self.clean_code(response)
+
+        # Provide a fallback response if retries are exhausted
+        print("Failed to fix and execute the code after multiple attempts.")
+        print(f"Returning the last working version or the original code.")
+        return original_code
+
+

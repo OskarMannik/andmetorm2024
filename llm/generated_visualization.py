@@ -1,52 +1,37 @@
-# Import the necessary libraries
+# Importing the required libraries
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Reading the data from the csv file
-df = pd.read_csv('./../scrape-and-modify-data/output/t_awvorm_001_curr.csv')
+# Loading the data from the CSV file
+data = pd.read_csv('./data.csv')
 
-# Check the first few rows of the dataset
-print(df.head())
+# Since the user requirements are to display the data distribution as a histogram,
+# we will select a numerical column for the visualization.
+# Here, I'm choosing 'aastakokku' (total quantity) column. You can change it if needed.
+column_to_visualize = 'aastakokku'
 
-# Convert string numbers to appropriate numeric types
-df['Sales'] = pd.to_numeric(df['Sales'], errors='coerce')
-df['Revenue'] = pd.to_numeric(df['Revenue'], errors='coerce')
-df['Customer_Count'] = pd.to_numeric(df['Customer_Count'], errors='coerce')
+# Preparing the data for visualization
+data_to_visualize = data[column_to_visualize]
 
-# Handle categorical data correctly
-df['Date'] = pd.to_datetime(df['Date'])
-df['Region'] = df['Region'].astype('category')
-df['Product_Category'] = df['Product_Category'].astype('category')
+# Checking for missing values
+if data_to_visualize.hasnans:
+    # If there are missing values, we will fill them using the mean value of the column
+    data_to_visualize = data_to_visualize.fillna(data_to_visualize.mean())
 
-# Deal with potential missing or invalid values
-df = df.dropna()
+# Creating the histogram
+plt.hist(data_to_visualize, bins=20, edgecolor='black')
 
-# Time series plot for Sales column
-plt.figure(figsize=(12, 6))
-plt.style.use('ggplot')
-plt.plot('Date', 'Sales', data=df)
-plt.title('Sales Over Time')
-plt.xlabel('Date')
-plt.ylabel('Sales')
-plt.show()
+# Setting the plot title, x-axis label, and y-axis label
+plt.title('Data Distribution of ' + column_to_visualize)
+plt.xlabel(column_to_visualize)
+plt.ylabel('Frequency')
 
-# Bar chart for Revenue by Region
-plt.figure(figsize=(12, 6))
-plt.style.use('ggplot')
-revenue_by_region = df.groupby('Region')['Revenue'].mean()
-plt.bar(revenue_by_region.index, revenue_by_region.values)
-plt.title('Average Revenue by Region')
-plt.xlabel('Region')
-plt.ylabel('Revenue')
-plt.show()
+# Adding gridlines
+plt.grid(axis='y', linestyle='--')
 
-# Bar chart for Customer_Count by Product_Category
-plt.figure(figsize=(12, 6))
-plt.style.use('ggplot')
-customer_count_by_category = df.groupby('Product_Category')['Customer_Count'].mean()
-plt.bar(customer_count_by_category.index, customer_count_by_category.values)
-plt.title('Average Customer Count by Product Category')
-plt.xlabel('Product Category')
-plt.ylabel('Customer Count')
+# Saving the visualization as 'output_visualization.png'
+plt.savefig('output_visualization.png')
+
+# Displaying the plot
 plt.show()
