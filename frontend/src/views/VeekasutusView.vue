@@ -1,30 +1,20 @@
 <template>
-  <div class="main-container">
-    <ChatBot ref="chatBot" />
+  <div class="content-container">
     <ImageDisplay 
-      title="Graafi kirjeldus" 
+      title="Veekasutus" 
       imagePath="../../data/image.png"
-      :isVisible="chatBot?.showImage"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import ChatBot from '../components/ChatBot.vue'
 import ImageDisplay from '../components/ImageDisplay.vue'
-import { ref } from 'vue'
-
-const chatBot = ref()
 </script>
 
 <style scoped>
-.main-container {
+.content-container {
   width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 </style> 
