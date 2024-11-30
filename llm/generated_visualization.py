@@ -3,37 +3,28 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Load the data from the CSV file
-# The CSV file is assumed to be in the same directory as the script
-# The 'sep' parameter is set to ',' to specify that the values are comma-separated
-data = pd.read_csv('../scrape-and-modify-data/output/t_awtabel002_02_curr copy.csv')
+# Load the dataset from the CSV file
+# The CSV file is located in the specified path and has a header row
+data = pd.read_csv('../scrape-and-modify-data/output/sademed.csv')
 
-# Filter the data to only include the years 2022 and 2023
-# This is based on the user's requirement to compare these two years
-data_2022 = data[data['reporting_year'] == 2022]
-data_2023 = data[data['reporting_year'] == 2023]
+# The user requires a yearly comparison, so we will create a line chart
+# to visualize the 'sademete_hulk_mm' (amount of precipitation in mm) over the years
+# We will use the 'aasta' (year) column as the x-axis and 'sademete_hulk_mm' as the y-axis
 
-# Calculate the total for each month in 2022 and 2023
-# This is done by summing up the values for each month across all stations
-total_2022 = data_2022[['january', 'february', 'march', 'april', 'may', 'june', 
-                        'july', 'august', 'september', 'october', 'november', 'december']].sum()
-total_2023 = data_2023[['january', 'february', 'march', 'april', 'may', 'june', 
-                        'july', 'august', 'september', 'october', 'november', 'december']].sum()
+# Create the line chart
+plt.figure(figsize=(10, 6))  # Set the figure size
+plt.plot(data['aasta'], data['sademete_hulk_mm'], marker='o')  # Create the line chart with markers
 
-# Create a line plot to compare the total for each month in 2022 and 2023
-# The x-axis represents the months, and the y-axis represents the total
-plt.figure(figsize=(10,6))  # Set the figure size
-plt.plot(total_2022.index, total_2022.values, label='2022')  # Plot the data for 2022
-plt.plot(total_2023.index, total_2023.values, label='2023')  # Plot the data for 2023
-plt.xlabel('Month')  # Set the x-axis label
-plt.ylabel('Total')  # Set the y-axis label
-plt.title('Comparison of Total by Month in 2022 and 2023')  # Set the title
-plt.legend()  # Display the legend
-plt.grid(True)  # Display the grid
-plt.xticks(rotation=45)  # Rotate the x-axis labels for better readability
+# Add title and labels
+plt.title('Yearly Comparison of Precipitation Amount')  # Set the title
+plt.xlabel('Year')  # Set the x-axis label
+plt.ylabel('Precipitation Amount (mm)')  # Set the y-axis label
 
-# Save the plot as a PNG file
+# Add grid lines for better readability
+plt.grid(True)
+
+# Save the visualization as a PNG file
 plt.savefig('output_visualization.png')
 
-# Display the plot
+# Display the chart
 plt.show()
