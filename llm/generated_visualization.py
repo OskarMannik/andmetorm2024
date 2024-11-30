@@ -1,4 +1,3 @@
-# Import necessary libraries
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -29,7 +28,6 @@ plt.ylabel('Water Volume')
 # Rotate the x-axis labels for better readability
 plt.xticks(rotation=45)
 
-# Save the visualization as a PNG file
 plt.savefig('output_visualization.png')
 
 # Display the plot

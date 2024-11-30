@@ -1,30 +1,46 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import Sidebar from './components/Sidebar.vue'
+import Header from './components/Header.vue'
+import Footer from './components/Footer.vue'
+import ChatBot from './components/ChatBot.vue'
 </script>
 
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="app-container">
+    <Sidebar />
+    <Header />
+    <main class="main-content">
+      <div class="content-container">
+        <router-view></router-view>
+        <ChatBot />
+      </div>
+    </main>
+    <Footer />
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+
+.app-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  margin-top: 60px; /* Space for header */
+  padding-left: 60px; /* Space for hamburger button */
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+.content-container {
+  max-width: 650px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>
