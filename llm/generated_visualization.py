@@ -33,5 +33,5 @@ plt.grid(axis='y', linestyle='--')
 # Saving the visualization as 'output_visualization.png'
 plt.savefig('output_visualization.png')
 
-# Displaying the plot
+# Display the plot
 plt.show()
