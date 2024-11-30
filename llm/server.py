@@ -12,7 +12,7 @@ def generate_image():
 
     visualization_generator.generate_visualization()
 
-    img_path = "/llm/output_visualization.png"
+    img_path = "llm/data/data.csv"
 
     # Load the image from the file
     with open(img_path, 'rb') as img_file:

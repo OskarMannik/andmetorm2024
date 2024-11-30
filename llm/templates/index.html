@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <title>Luup - Visualiseerimise Genereerija</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #f0f8ff;
+        }
+        .navbar {
+            background-color: #0056b3;
+        }
+        .navbar-brand, .navbar-nav .nav-link {
+            color: #fff !important;
+        }
+        .btn-primary {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-primary:hover {
+            background-color: #004080;
+            border-color: #004080;
+        }
+        footer {
+            margin-top: 20px;
+            padding: 10px 0;
+            background-color: #0056b3;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">Luup</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Tere tulemast rakendusse Luup!</h1>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="post">
+                    <!-- Dataset Selection -->
+                    <div class="mb-3">
+                        <label for="dataset" class="form-label">Valige andmekogum:</label>
+                        <select name="dataset" id="dataset" class="form-select">
+                            <option value="sademed">Sademed</option>
+                            <option value="veevool">Veevool</option>
+                        </select>
+                    </div>
+                    <!-- User Requirements -->
+                    <div class="mb-3">
+                        <label for="user_requirements" class="form-label">Palun sisestage oma visualiseerimise nõuded:</label>
+                        <textarea name="user_requirements" id="user_requirements" rows="4" class="form-control" placeholder="Kirjeldage soovitud visualiseeringut..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Genereeri Visualiseering</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        &copy; {{ current_year }} Luup. Kõik õigused kaitstud.
+    </footer>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
